@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Font_K.svg/2000px-Font_K.svg.png" type="image/ico"
+    />
+    <title>KELLY▶改寫月曆為行事曆</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 bg-danger mt-2" style="height:20px">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-10 offset-md-2">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn" style="background-color:white;" id="prev">
+                        <i class="fas fa-caret-left"></i>
+                    </button>
+                    <button type="button" class="btn" style="width:888px; background-color:white;">
+                        <h1 id="calendar-title"></h1>
+                        <h2 id="calendar-year"></h2>
+                    </button>
+                    <button type="button" class="btn" style="background-color:white;" id="next">
+                        <i class="fas fa-caret-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- new schedule button -->
+        <div class="row">
+            <div class="col-md-2 offset-md-10">
+                <button type="button" class="btn" style="color: white;background-color: rgb(239, 79, 105);border-style:dashed;" data-toggle="modal"
+                    data-target="#createSchedule">新增代辦事項</button>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-12 bg-light text-center body-list   lightcolor">
+                <ul>
+                    <li>
+                        <p class="text-center">SUN</p>
+                    </li>
+                    <li>
+                        <p class="text-center">MON</p>
+                    </li>
+                    <li>
+                        <p class="text-center">TUE</p>
+                    </li>
+                    <li>
+                        <p class="text-center">WED</p>
+                    </li>
+                    <li>
+                        <p class="text-center">THU</p>
+                    </li>
+                    <li>
+                        <p class="text-center">FRI</p>
+                    </li>
+                    <li>
+                        <p class="text-center">SAT</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 bg-light text-center">
+                <div class="darkgrey body-list">
+                    <ul id="days">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="createSchedule" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modelTitleId">代辦事項</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+
+                        <div class="form-group row">
+                            <label for="inputEmail3" class="col-sm-2 col-form-label">年份：</label>
+                            <div class="col-sm-10">
+                                <input id="year" type="email" class="form-control" placeholder="--">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inputEmail3" class="col-sm-2 col-form-label">月份：</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="month">
+                                    <option selected>--</option>
+                                    <option>01</option>
+                                    <option>02</option>
+                                    <option>03</option>
+                                    <option>04</option>
+                                    <option>05</option>
+                                    <option>06</option>
+                                    <option>07</option>
+                                    <option>08</option>
+                                    <option>09</option>
+                                    <option>10</option>
+                                    <option>11</option>
+                                    <option>12</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row">
+                            <label for="inputEmail3" class="col-sm-2 col-form-label">日期：</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="day">
+                                    <option selected>--</option>
+                                    <option>01</option>
+                                    <option>02</option>
+                                    <option>03</option>
+                                    <option>04</option>
+                                    <option>05</option>
+                                    <option>06</option>
+                                    <option>07</option>
+                                    <option>08</option>
+                                    <option>09</option>
+                                    <option>10</option>
+                                    <option>11</option>
+                                    <option>12</option>
+                                    <option>13</option>
+                                    <option>14</option>
+                                    <option>15</option>
+                                    <option>16</option>
+                                    <option>17</option>
+                                    <option>18</option>
+                                    <option>19</option>
+                                    <option>20</option>
+                                    <option>21</option>
+                                    <option>22</option>
+                                    <option>23</option>
+                                    <option>24</option>
+                                    <option>25</option>
+                                    <option>26</option>
+                                    <option>27</option>
+                                    <option>28</option>
+                                    <option>29</option>
+                                    <option>30</option>
+                                    <option>31</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <fieldset class="form-group">
+                            <div class="row">
+                                <legend class="col-form-label col-sm-2 pt-0"></legend>
+                                <div class="col-sm-10">
+                                    <div class="form-check form-check-inline">
+                                        <input id="morning" class="form-check-input" type="radio" name="gridRadios" value="option1" checked>
+                                        <label class="form-check-label" for="gridRadios1">
+                                            上午
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input id="afternoon" class="form-check-input" type="radio" name="gridRadios" value="option2">
+                                        <label class="form-check-label" for="gridRadios2">
+                                            下午
+                                        </label>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="form-group row">
+                            <label for="inputEmail3" class="col-sm-2 col-form-label">時間：</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="hour">
+                                    <option selected>--</option>
+                                    <option>01</option>
+                                    <option>02</option>
+                                    <option>03</option>
+                                    <option>04</option>
+                                    <option>05</option>
+                                    <option>06</option>
+                                    <option>07</option>
+                                    <option>08</option>
+                                    <option>09</option>
+                                    <option>10</option>
+                                    <option>11</option>
+                                    <option>12</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputPassword3" class="col-sm-2 col-form-label"></label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="minute" placeholder="--">
+                                    <option selected>--</option>
+                                    <option>00</option>
+                                    <option>15</option>
+                                    <option>30</option>
+                                    <option>45</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-2">標題：</div>
+                            <div class="col-sm-10">
+                                <input id="affairs" type="email" class="form-control" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-2">顏色：</div>
+                            <div class="col-sm-10">
+                                <input id="color" type="color" name="favcolor" value="000000">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="save" type="button" class="btn btn-primary" data-dismiss="modal">儲存</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        var month_olympic = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        var month_normal = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        var month_name = ["January", "Febrary", "March", "April", "May", "June", "July", "Auguest", "September",
+            "October", "November", "December"
+        ];
+
+        var holder = document.getElementById("days");
+        var prev = document.getElementById("prev");
+        var next = document.getElementById("next");
+        var ctitle = document.getElementById("calendar-title");
+        var cyear = document.getElementById("calendar-year");
+
+        var my_date = new Date();
+        var my_year = my_date.getFullYear();
+        var my_month = my_date.getMonth();
+        var my_day = my_date.getDate();
+        var last_monthend = new Date(my_date.getFullYear(), my_date.getMonth(), 0); //上個月最後一天
+        var next_monthend = new Date(my_date.getFullYear(), my_date.getMonth() + 1, 1); //下個月的第一天
+
+        function dayStart(month, year) {
+            var tmpDate = new Date(year, month, 1);
+            return (tmpDate.getDay());
+        }
+
+        function dayLastEnd(month, year) {
+            var tmpendDate = new Date(year, month - 1, 1);
+            return (tmpendDate.getDay());
+        }
+
+        function daysMonth(month, year) { //判斷是否為閏年
+            var tmp = year % 4;
+            if (tmp == 0) {
+                return (month_olympic[month]);
+            } else {
+                return (month_normal[month]);
+            }
+        }
+
+        function refreshDate() {
+            var str = "";
+            var totalDay = daysMonth(my_month, my_year); //當月的總天數
+            var firstDay = dayStart(my_month, my_year); //當月第一天是星期幾
+            var myclass;
+            var myclass_gray = " class='lightgrey'";
+            var myclass_darkgrey = " class='darkgrey'";
+            var last = last_monthend.getDay(); //上個月最後一天的星期
+            var l_day;
+            var n_day;
+
+            //補空白(上個月)
+            for (var i = 0; i < firstDay; i++) {
+                l_day = last_monthend.getDate() - last;
+                str += "<li" + myclass_gray + ">" + l_day + "</li>";
+                last = last - 1;
+            }
+
+            //當月
+            for (var i = 1; i <= totalDay; i++) {
+                if ((i < my_day && my_year == my_date.getFullYear() &&
+                        my_month == my_date.getMonth()) || my_year < my_date.getFullYear() ||
+                    (my_year == my_date.getFullYear() && my_month < my_date.getMonth())) {
+                    myclass = " class='darkgrey'"; //當天前的日期為灰色的
+                } else if (i == my_day && my_year == my_date.getFullYear() && my_month == my_date.getMonth()) {
+                    myclass = " class='today todaybg'"; //當天(橘色)
+                } else {
+                    myclass = " class='darkgrey'"; //尚未過的(黑色)
+                }
+                str += "<li" + myclass + ">" + i + "</li>"; //顯示日期
+            }
+
+
+            //補空白(下個月)
+            var next = next_monthend.getDate();
+            for (var i = next_monthend.getDay(); i < 7; i++) {
+                n_day = next++;
+                str += "<li" + myclass_gray + ">" + n_day + "</li>";
+            }
+
+            holder.innerHTML = str;
+            ctitle.innerHTML = month_name[my_month];
+            cyear.innerHTML = my_year;
+        }
+        refreshDate();
+        get_localStorage()
+
+        prev.onclick = function (e) {
+            e.preventDefault();
+            my_month--;
+            if (my_month < 0) {
+                my_year--;
+                my_month = 11;
+            }
+            last_monthend = new Date(my_year, my_month, 0);
+            next_monthend = new Date(my_year, my_month + 1, 1);
+            refreshDate();
+            get_localStorage()
+        }
+
+        next.onclick = function (e) {
+            e.preventDefault();
+            my_month++;
+            if (my_month > 11) {
+                my_year++;
+                my_month = 0;
+            }
+            last_monthend = new Date(my_year, my_month, 0);
+            next_monthend = new Date(my_year, my_month + 1, 1);
+            refreshDate();
+            get_localStorage()
+        }
+
+
+        //------------------localstorage------------------
+
+        //save modal   
+        var button = document.getElementById("save");
+
+        var morning = document.getElementById("morning");
+        var afternoon = document.getElementById("afternoon");
+        var radio;
+        var Schedule, getSchedule;
+        button.onclick = function () {
+            if (morning.checked == true) {
+                radio = "上午";
+            } else if (afternoon.checked == true) {
+                radio = "下午";
+            }
+
+            getSchedule = new_Schedule();
+            var stringSchedule = JSON.stringify(getSchedule);
+            localStorage[getSchedule.key] = stringSchedule;
+            get_localStorage();
+        }
+
+        //抓取localStorage的資料 顯示在行事曆上
+        function get_localStorage() {
+            var lis = document.getElementsByTagName("li");
+            for (var i = 0; i < lis.length; i++) {
+                var li = lis[i];
+                for (var j = 0; j < localStorage.length; j++) {
+                    var objectSchedule = JSON.parse(localStorage[localStorage.key(j)]);
+                    if (objectSchedule.year == my_year &&
+                        objectSchedule.month == my_month + 1 &&
+                        objectSchedule.day == li.innerText) {
+
+                        li.innerHTML += '<div style="color :' + objectSchedule.color + '" >' + objectSchedule.r + ' ' +
+                            objectSchedule.hour + '點' + objectSchedule.minute +
+                            '分' + ' ' + objectSchedule.affairs;
+
+                        var btnDelete = document.createElement("button");
+                        btnDelete.textContent = "查看詳細內容";
+                        btnDelete.style = "background-color:#FFFF00; color: gray; border-style:dashed";
+                        btnDelete.id = localStorage.key(j);
+                        li.appendChild(btnDelete);
+                    }
+                }
+            }
+        }
+
+        var year = document.getElementById("year");
+        var month = document.getElementById("month");
+        var day = document.getElementById("day");
+        var hour = document.getElementById("hour");
+        var minute = document.getElementById("minute");
+        var affairs = document.getElementById("affairs");
+        var color = document.getElementById("color");
+
+        function new_Schedule() {
+            Schedule = {
+                key: '',
+                year: year.value,
+                month: month.value,
+                day: day.value,
+                hour: hour.value,
+                minute: minute.value,
+                r: radio,
+                affairs: affairs.value,
+                color: color.value
+            }
+            Schedule.key = _uuid();
+            return Schedule;
+        }
+
+        //new uuid
+        function _uuid() {
+            var d = Date.now();
+            if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+                d += performance.now(); //use high-precision timer if available
+            }
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = (d + Math.random() * 16) % 16 | 0;
+                d = Math.floor(d / 16);
+                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            });
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

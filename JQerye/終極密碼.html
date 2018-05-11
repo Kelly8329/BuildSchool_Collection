@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Font_K.svg/2000px-Font_K.svg.png" type="image/ico"
+    />
+    <title>KELLY▶JQ_終極密碼</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+
+    <link rel="stylesheet" href="style.css">
+
+    <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="card mt-5">
+                <div class="card-body" style="background-color:black">
+                    <center>
+                        <h1 style="color:white">終極密碼</h1>
+                        <h5 style="color:white" id="prompt_text">請輸入猜的數字(0~99)</h5>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="" id="output_text" aria-describedby="helpId" placeholder="您點選的數字" style="color:white background-color=black">
+                        </div>
+
+                        <div class="col mt-5">
+                            <div class="row">
+                                <button type="button" class="btn btn-light rounded-circle ml-4">1</button>
+                                <button type="button" class="btn btn-light rounded-circle ml-4">2</button>
+                                <button type="button" class="btn btn-light rounded-circle ml-4">3</button>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <button type="button" class="btn btn-light rounded-circle ml-4">4</button>
+                                <button type="button" class="btn btn-light rounded-circle ml-4">5</button>
+                                <button type="button" class="btn btn-light rounded-circle ml-4">6</button>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <button type="button" class="btn btn-light rounded-circle ml-4">7</button>
+                                <button type="button" class="btn btn-light rounded-circle ml-4">8</button>
+                                <button type="button" class="btn btn-light rounded-circle ml-4">9</button>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <a name="" id="btn_reset" class="btn btn-outline-danger rounded-square ml-4" role="button">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                                &nbsp;
+                                <button type="button" class="btn btn-light rounded-circle ml-3">0</button>
+                                <a name="" id="btn_guess" class="btn btn-outline-success rounded-square ml-4" role="button">
+                                    <i class="fas fa-undo-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </center>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--公式-->
+    <script>
+        $(function () {
+            var answer = Math.floor(Math.random() * 100);
+            var big = 100;
+            var sm = 0;
+            console.log(answer);
+            $("button").on('click', function () {
+                $("#output_text").val($("#output_text").val() + this.innerText);
+            });
+
+            // var cmdClean = $("#btn_reset")//清除
+            $("#btn_reset").click(function () {
+                $("#output_text").val(' ');
+            });
+
+            var count = 0;
+            //var cmdGuess = $("#btn_guess");
+            $("#btn_guess").click(function () {
+                var num = $("#output_text").val();
+                count++;
+                if (count == 5) {
+                    $("#prompt_text").text("猜題答五次，無法作答！");
+                    $("#btn_reset").disabled = true;
+                    $("#output_text").disabled = true;
+                }
+
+                else {
+                    if (answer == num) {
+                        $("#prompt_text").text("恭喜猜對了！");
+                        console.log("恭喜猜對了！");
+                    }
+
+                    else if (num > answer) {//77 56
+                        if (num < big) {
+                            big = num;
+                        }
+                        $("#prompt_text").text(sm + "~" + big);
+                        console.log(sm + "~" + big);
+                    }
+
+                    else {
+                        if (num > sm) {
+                            sm = num;
+                        }
+                        $("#prompt_text").text(sm + "~" + big);
+                        console.log(sm + "~" + big);
+                    }
+                }
+            });
+
+        });
+    </script>
+</body>
+
+</html>

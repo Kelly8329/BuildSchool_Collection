@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>遊程規劃</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div id="map" class="mapstyle">
+        MAP
+    </div>
+    <div id="right-panel">
+
+    </div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBz0wRwW3zZ5ka8Feo5f3V0dXyKNzZcLoE&callback=initMap">
+    </script>
+
+    <script>
+        var map;
+        var marker = null;
+        var center = { lat: 24.7849113, lng: 120.8859863 };
+        var start //起點
+        var end //終點
+        var waypts = []; //中間站
+        var totalstep
+        var directionsService = null;
+        var directionsDisplay = null;
+        window.onload = function () {
+            map = new google.maps.Map(
+                document.getElementById('map'), {
+                    center: center,
+                    zoom: 15
+                }
+            );
+
+            directionsService = new google.maps.DirectionsService();
+            directionsDisplay = new google.maps.DirectionsRenderer({
+                draggable: true,
+                map: map,
+                panel: document.getElementById('right-panel')
+            });
+
+            displayRoute(start, end, directionsService,
+                directionsDisplay);
+
+            totalstep = function (e, start, end, waypts) {
+                if (start != null && end != null) {
+                    if (waypts == null) {
+                        directionsService.route({
+                            origin: start,
+                            destination: end,
+                            optimizeWaypoints: true,
+                            travelMode: 'DRIVING'
+                        }, function (response, status) {
+                            if (status === 'OK') {
+                                directionsDisplay.setDirections(response);
+                                var route = response.routes[0];
+                                var summaryPanel = document.getElementById('directions-panel');
+                                // summaryPanel.innerHTML = '';
+                                // for (var i = 0; i < route.legs.length; i++) {
+                                //     var routeSegment = i + 1;
+                                //     summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
+                                //         '</b><br>';
+                                //     summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+                                //     summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+                                //     summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
+                                // }
+                            } else {
+                                window.alert('Directions request failed due to ' + status);
+                            }
+                        });
+                    }
+                    else {
+                        directionsService.route({
+                            origin: start,
+                            destination: end,
+                            waypoints: waypts,
+                            optimizeWaypoints: true,
+                            travelMode: 'DRIVING'
+                        }, function (response, status) {
+                            if (status === 'OK') {
+                                directionsDisplay.setDirections(response);
+                                var route = response.routes[0];
+                                var summaryPanel = document.getElementById('directions-panel');
+                                //summaryPanel.innerHTML = '';
+                                // for (var i = 0; i < route.legs.length; i++) {
+                                //     var routeSegment = i + 1;
+                                //     summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
+                                //         '</b><br>';
+                                //     summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+                                //     summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+                                //     summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
+                                // }
+                            } else {
+                                window.alert('Directions request failed due to ' + status);
+                            }
+                        });
+                    }
+                }
+            }
+            //找出飯店經緯度
+            var request = new XMLHttpRequest();
+            request.open("GET", "http://opendata.hccg.gov.tw/dataset/39ee314b-7ce7-4265-a6b5-b57f42392da8/resource/6a3a5f61-5383-419d-a94c-df710071a51e/download/20180321131425502.json");
+            request.onload = function () {
+                var items = JSON.parse(this.responseText);
+                for (var item of items) {
+                    var marker = new google.maps.Marker({
+                        position: { lat: parseFloat(item.緯度), lng: parseFloat(item.經度) },
+                        map: map,
+                        icon: "https://png.icons8.com/metro/15/0044BB/home.png",
+                        title: item["旅館名稱"]
+                    });
+
+                    marker.addListener("click", function (e) {
+                        if (start == null) {
+                            start = e.latLng.lat() + ',' + e.latLng.lng();
+                            return;
+                        }
+                        if (end == null) {
+                            end = e.latLng.lat() + ',' + e.latLng.lng();
+                        }
+                        //將其他地點存入waypts[]
+                        else {
+                            waypts.push({
+                                location: end,
+                                stopover: true
+                            });
+                            end = e.latLng.lat() + ',' + e.latLng.lng();
+                        }
+                        totalstep(e, start, end, waypts);
+                    });
+                }
+            }
+            request.send();
+
+
+            //找出景點經緯度
+            var geocoder = new google.maps.Geocoder();
+            var request = new XMLHttpRequest();
+            request.open("GET", "http://opendata.hccg.gov.tw/dataset/07caf18a-a966-4409-810a-ce3fdb7447b7/resource/3bca2d3b-177c-4e4a-9576-4a3ed8c81612/download/20180307114843661.json");
+            request.onload = function () {
+                var items = JSON.parse(this.responseText);
+                items.forEach(item => {
+                    var address = item["地址"];
+                    var name = item["景點名稱"];
+                    var time = 0;
+                    var view = function () {
+                        geocoder.geocode({ 'address': address }, function (results, status) {
+                            if (results != null && status == google.maps.GeocoderStatus.OK) {
+                                map.setCenter(results[0].geometry.location);
+                                var marker = new google.maps.Marker({
+                                    map: map,
+                                    position: results[0].geometry.location,
+                                    icon: "https://png.icons8.com/metro/25/FF0000/marker.png",
+                                    title: name
+                                });
+
+                                marker.addListener("click", function (e) {
+                                    if (start == null) {
+                                        start = e.latLng.lat() + ',' + e.latLng.lng();
+                                        return;
+                                    }
+                                    if (end == null) {
+                                        end = e.latLng.lat() + ',' + e.latLng.lng();
+                                    }
+                                    //將其他地點存入waypts[]
+                                    else {
+                                        waypts.push({
+                                            location: end,
+                                            stopover: true
+                                        });
+                                        end = e.latLng.lat() + ',' + e.latLng.lng();
+                                    }
+                                    totalstep(e, start, end, waypts);
+                                });
+                            }
+                            else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                                setTimeout(function () {
+                                    time++;
+                                    view();
+                                }, 5);
+                            }
+                        });
+                    }
+                    view();
+                });
+            }
+            request.send();
+
+
+            //找出餐廳經緯度
+            var geocoderfood = new google.maps.Geocoder();
+            var requestfood = new XMLHttpRequest();
+            requestfood.open("GET", "http://opendata.hccg.gov.tw/dataset/4e722575-66a2-4af9-b1ff-95c2469331d1/resource/e17629a6-f7fb-4895-9d91-9d8e37d79eae/download/20180307103221255.json");
+            requestfood.onload = function () {
+                var itemsfood = JSON.parse(this.responseText);
+                itemsfood.forEach(itemfood => {
+                    var addressfood = itemfood["地址"];
+                    var namefood = itemfood["店家名稱"];
+                    var timefood = 0;
+                    var total = [];
+                    var waypts = [];
+                    var food = function () {
+                        geocoderfood.geocode({ 'address': addressfood }, function (results, status) {
+                            if (results != null && status == google.maps.GeocoderStatus.OK) {
+                                map.setCenter(results[0].geometry.location);
+                                var marker = new google.maps.Marker({
+                                    map: map,
+                                    position: results[0].geometry.location,
+                                    icon: "https://png.icons8.com/ios-glyphs/24/227700/food.png",
+                                    title: namefood
+                                });
+
+                                marker.addListener("click", function (e) {
+                                    if (start == null) {
+                                        start = e.latLng.lat() + ',' + e.latLng.lng();
+                                        return;
+                                    }
+                                    if (end == null) {
+                                        end = e.latLng.lat() + ',' + e.latLng.lng();
+                                    }
+                                    //將其他地點存入waypts[]
+                                    else {
+                                        waypts.push({
+                                            location: end,
+                                            stopover: true
+                                        });
+                                        end = e.latLng.lat() + ',' + e.latLng.lng();
+                                    }
+                                    totalstep(e, start, end, waypts);
+                                });
+                            }
+                            else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                                setTimeout(function () {
+                                    timefood++;
+                                    food();
+                                }, 5);
+                            }
+                        });
+                    }
+                    food();
+                });
+            }
+            requestfood.send();
+
+
+            function displayRoute(start, end, service, display) {
+                service.route({
+                    origin: start,
+                    destination: end,
+                    waypoints: waypts,
+                    travelMode: 'DRIVING',
+                    avoidTolls: true
+                }, function (response, status) {
+                    if (status === 'OK') {
+                        display.setDirections(response);
+                    } else {
+                        alert('Could not display directions due to: ' + status);
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+
+</html>

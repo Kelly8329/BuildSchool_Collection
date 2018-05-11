@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Font_K.svg/2000px-Font_K.svg.png" type="image/ico"
+    />
+    <title>KELLY▶製作月曆</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-10 bg-danger mt-2" style="height:10px">
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" class="btn" style="background-color:white;" id="prev">
+                    <i class="fas fa-caret-left"></i>
+                </button>
+                <button type="button" class="btn" style="width:888px; background-color:white;">
+                    <h1 id="calendar-title"></h1>
+                    <h2 id="calendar-year"></h2>
+                </button>
+                <button type="button" class="btn" style="background-color:white;" id="next">
+                    <i class="fas fa-caret-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-10 bg-light text-center body-list lightcolor">
+                <ul>
+                    <li>SUN</li>
+                    <li>MON</li>
+                    <li>TUE</li>
+                    <li>WED</li>
+                    <li>THU</li>
+                    <li>FRI</li>
+                    <li>SAT</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-10 bg-light text-center">
+                <div class="darkgrey body-list">
+                    <ul id="days">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        var month_olympic = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        var month_normal = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        var month_name = ["January", "Febrary", "March", "April", "May", "June", "July", "Auguest", "September", "October", "November", "December"];
+
+        var holder = document.getElementById("days");
+        var prev = document.getElementById("prev");
+        var next = document.getElementById("next");
+        var ctitle = document.getElementById("calendar-title");
+        var cyear = document.getElementById("calendar-year");
+
+        var my_date = new Date();
+        var my_year = my_date.getFullYear();
+        var my_month = my_date.getMonth();
+        var my_day = my_date.getDate();
+        var last_monthend = new Date(my_date.getFullYear(), my_date.getMonth(), 0);//上個月最後一天
+        var next_monthend = new Date(my_date.getFullYear(), my_date.getMonth() + 1, 1);//下個月的第一天
+
+        function dayStart(month, year) {
+            var tmpDate = new Date(year, month, 1);
+            return (tmpDate.getDay());
+        }
+
+        function dayLastEnd(month, year) {
+            var tmpendDate = new Date(year, month - 1, 1);
+            return (tmpendDate.getDay());
+        }
+
+        function daysMonth(month, year) {//判斷是否為閏年
+            var tmp = year % 4;
+            if (tmp == 0) {
+                return (month_olympic[month]);
+            } else {
+                return (month_normal[month]);
+            }
+        }
+
+        function refreshDate() {
+            var str = "";
+            var totalDay = daysMonth(my_month, my_year); //當月的總天數
+            var firstDay = dayStart(my_month, my_year); //當月第一天是星期幾
+            var myclass;
+            var myclass_gray = " class='lightgrey'";
+            var myclass_darkgrey = " class='darkgrey'";
+            var last = last_monthend.getDay();//上個月最後一天的星期
+            var l_day;
+            var n_day;
+
+            //補空白(上個月)
+            for (var i = 0; i < firstDay; i++) {
+                l_day = last_monthend.getDate() - last;
+                str += "<li" + myclass_gray + ">" + l_day + "</li>";
+                last = last - 1;
+            }
+
+            //當月
+            for (var i = 1; i <= totalDay; i++) {
+                if ((i < my_day && my_year == my_date.getFullYear() &&
+                    my_month == my_date.getMonth()) || my_year < my_date.getFullYear()
+                    || (my_year == my_date.getFullYear() && my_month < my_date.getMonth())) {
+                    myclass = " class='darkgrey'"; //當天前的日期為灰色的
+                } else if (i == my_day && my_year == my_date.getFullYear() && my_month == my_date.getMonth()) {
+                    myclass = " class='today todaybg'"; //當天(橘色)
+                } else {
+                    myclass = " class='darkgrey'";//尚未過的(黑色)
+                }
+                str += "<li" + myclass + ">" + i + "</li>";//顯示日期
+            }
+
+
+            //補空白(下個月)
+            var next = next_monthend.getDate();
+            for (var i = next_monthend.getDay(); i < 7; i++) {
+                n_day = next++;
+                str += "<li" + myclass_gray + ">" + n_day + "</li>";
+            }
+
+            holder.innerHTML = str;
+            ctitle.innerHTML = month_name[my_month];
+            cyear.innerHTML = my_year;
+        }
+        refreshDate();
+
+        prev.onclick = function (e) {
+            e.preventDefault();
+            my_month--;
+            if (my_month < 0) {
+                my_year--;
+                my_month = 11;
+            }
+            last_monthend = new Date(my_year, my_month, 0);
+            next_monthend = new Date(my_year, my_month + 1, 1);
+            refreshDate();
+        }
+
+        next.onclick = function (e) {
+            e.preventDefault();
+            my_month++;
+            if (my_month > 11) {
+                my_year++;
+                my_month = 0;
+            }
+            last_monthend = new Date(my_year, my_month, 0);
+            next_monthend = new Date(my_year, my_month + 1, 1);
+            refreshDate();
+        } 
+    </script>
+</body>
+
+</html>

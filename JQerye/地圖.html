@@ -1,0 +1,84 @@
+<html>
+
+<head>
+    <title>JQ_地圖</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="map" style="width: 100%; height: 500px">
+        MAP
+    </div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBz0wRwW3zZ5ka8Feo5f3V0dXyKNzZcLoE&callback=initMap">
+    </script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--公式-->
+    <script>
+        var map;
+        var marker = null;
+        var center = {
+            lat: 24.7982842,
+            lng: 120.9655487
+        };
+        var routes = [];
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+
+        $(function () {
+            map = new google.maps.Map(
+                document.getElementById('map'), {
+                    center: center,
+                    zoom: 14
+                });
+
+            directionsDisplay.setMap(map);
+
+            $.ajax({
+                url: "http://opendata.hccg.gov.tw/dataset/32d40161-8d8f-4da4-8a44-09f14b480c33/resource/22c99566-c9a2-469d-9178-3893d8605cdc/download/20180307103028802.json",
+                type: "GET"
+            }).done(function (data) {
+                for (var item of data) {
+                    var address = item.地址;
+                    var name = item.得獎產品名稱;
+
+                    if (address === '')
+                        continue;
+
+                    $.ajax({
+                        url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' +
+                            address + '&key=AIzaSyAJDrjZJYcb1I6r1_7dWW_m0jj3mDLqRqE',
+                        type: 'GET',
+                        async: false
+                    }).done(function (data) {
+                        console.log(
+                            "address: " + address +
+                            "lat: " + data.results[0].geometry.location.lat +
+                            "lng: " + data.results[0].geometry.location.lng
+                        );
+
+                        var marker = new google.maps.Marker({
+                            position:{
+                                lat:data.results[0].geometry.location.lat,
+                                lng:data.results[0].geometry.location.lng
+                            },
+                            map:map,
+                            icon: "https://png.icons8.com/metro/15/3A0088/thumbs-up.png",
+                            title:name
+                        })
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

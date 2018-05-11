@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>預估交通費用</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="map"></div>
+    <div id="right-panel">
+    </div>
+
+    <div style="clear:both">
+        開車
+        <br/> 總距離：
+        <span id="D_totaldestination"></span>， 總時間：
+        <span id="D_totaltime"></span>， 總路段：
+        <span id="D_totalroad"></span>， 費用:NT$
+        <span id="D_price"></span>
+    </div>
+    <br/>
+    <div style="clear:both">
+        大眾運輸
+        <br/> 總距離：
+        <span id="T_totaldestination"></span>， 總時間：
+        <span id="T_totaltime"></span>， 總路段：
+        <span id="T_totalroad"></span>， 費用:NT$
+        <span id="T_price"></span>
+    </div>
+    <br/>
+    <div style="clear:both">
+        計程車
+        <br/> 總距離：
+        <span id="X_totaldestination"></span>， 總時間：
+        <span id="X_totaltime"></span>， 總路段：
+        <span id="X_totalroad"></span>， 費用:NT$
+        <span id="X_price"></span>
+    </div>
+
+
+    <script>
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: { lat: 24.7631704, lng: 120.9495828 }
+            });
+
+            var directionsService = new google.maps.DirectionsService;
+            var directionsDisplay = new google.maps.DirectionsRenderer({
+                draggable: true,
+                map: map,
+                panel: document.getElementById('right-panel')
+            });
+
+            directionsDisplay.addListener('directions_changed', function () {
+                computeTotalDistance(directionsDisplay.getDirections());
+            });
+
+            displayRoute('中華大學, 台灣', '新竹火車站, 台灣', directionsService,
+                directionsDisplay);
+        }
+
+        function displayRoute(origin, destination, service, display) {
+            service.route({
+                origin: origin,
+                destination: destination,
+                //waypoints: [{ location: '中華大學, 台灣' }, { location: '新竹火車站, 台灣' }],
+                travelMode: 'TRANSIT',
+                avoidTolls: true
+            }, function (response, status) {
+                if (status === 'OK') {
+                    display.setDirections(response);
+                } else {
+                    alert('Could not display directions due to: ' + status);
+                }
+            });
+        }
+    </script>
+
+    <script type="text/javascript">
+        var map;
+        var marker = null;
+        var center = { lat: 24.7571075, lng: 120.952429 };
+        var point1 = null, point2 = null;
+        var directionsService = null;
+        var directionsDisplay = null;
+
+        window.onload = function () {
+
+            map = new google.maps.Map(
+                document.getElementById('map'), {
+                    center: center,
+                    zoom: 15
+                });
+
+            directionsService = new google.maps.DirectionsService();
+            directionsDisplay = new google.maps.DirectionsRenderer();
+            directionsDisplay.setMap(map);
+
+
+            directionsService.route({
+                origin: "中華大學",
+                destination: "新竹火車站",
+                travelMode: 'DRIVING'
+            }, function (response, status) {
+                if (status === 'OK') {
+                    directionsDisplay.setDirections(response);
+                    var leg = response.routes[0].legs[0];
+                    //var totalDistences = 0;
+                    //var totalTime = 0;
+                    // for (var step of leg.steps) {
+                    // totalDistences += parseInt(step.distance.value) / 1000;
+                    //totalTime += parseInt(step.duration.value) / 60;
+                    // }
+                    document.getElementById("D_totaldestination").innerText = leg.distance.text;
+                    document.getElementById("D_totaltime").innerText = leg.duration.text;
+                    document.getElementById("D_totalroad").innerText = leg.steps.length + "段";
+                    var fare = response.routes[0].fare;
+                    document.getElementById("D_price").innerText = (((leg.distance.value / 1000).toFixed(1) * 5) );
+                    console.log(((leg.distance.value/1000).toFixed(1)*5)+ fare.value);
+                } else {
+                    window.alert(status);
+                }
+            });
+
+            directionsService.route({
+                origin: "中華大學",
+                destination: "新竹火車站",
+                travelMode: 'TRANSIT',
+                //fare : {currency : "TWD"},
+            }, function (response, status) {
+                if (status === 'OK') {
+                    //console.log(response);
+                    directionsDisplay.setDirections(response);
+                    var leg = response.routes[0].legs[0];
+                    document.getElementById("T_totaldestination").innerText = leg.distance.text;
+                    document.getElementById("T_totaltime").innerText = leg.duration.text;
+                    document.getElementById("T_totalroad").innerText = leg.steps.length + "段";
+                    var fare = response.routes[0].fare;
+                    document.getElementById("T_price").innerText = fare.value;
+                } else {
+                    window.alert(status);
+                }
+            });
+
+            directionsService.route({
+                origin: "中華大學",
+                destination: "新竹火車站",
+                travelMode: 'DRIVING'
+            }, function (response, status) {
+                if (status === 'OK') {
+                    directionsDisplay.setDirections(response);
+                    var leg = response.routes[0].legs[0];
+                    document.getElementById("X_totaldestination").innerText = leg.distance.text;
+                    document.getElementById("X_totaltime").innerText = leg.duration.text;
+                    document.getElementById("X_totalroad").innerText = leg.steps.length + "段";
+                    document.getElementById("X_price").innerText = ((((leg.distance.value / 1000).toFixed(1) - 1.5) / 0.25 * 5) + 85);
+                } else {
+                    window.alert(status);
+                }
+            });
+        }
+    </script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBz0wRwW3zZ5ka8Feo5f3V0dXyKNzZcLoE&callback=initMap">
+    </script>
+</body>
+
+</html>
