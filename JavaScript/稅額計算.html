@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+
+    <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl"
+        crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-9 text-center mt-3">
+                <h3>稅額試算</h3>
+            </div>
+        </div>
+        <!--所得淨額-->
+        <div class="form-group row">
+            <label for="txtNetIncome" class="col-2 col-form-label text-right">所得淨額</label>
+            <div class="input-group col-6">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+                <input type="text" class="form-control" id="txtNetIncome" />
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn btn-prim" id="bt_calculate">
+                    <i class="fas fa-calculator"></i>
+                </button>
+            </div>
+        </div>
+        <!--稅率-->
+        <div class="form-group row">
+            <label for="txtNetRate" class="col-3 col-form-label text-right">稅率</label>
+            <div class="input-group col-5">
+                <input type="text" class="form-control" readonly maxlength="5" id="txtTaxRate" />
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <i class="fas fa-percent"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--累進差額-->
+        <div class="form-group row">
+            <label for="txtTaxAdjustment" class="col-3 col-form-label text-right">累進差額</label>
+            <div class="input-group col-5">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+                <input type="text" class="form-control" readonly id="txtTaxAdjustment" />
+            </div>
+        </div>
+    </div>
+
+    <!--應納稅額-->
+    <div class="form-group row">
+        <label for="txtTaxAmount" class="col-3 col-form-label text-right">應納稅額</label>
+        <div class="input-group col-5">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+            </div>
+            <input type="text" class="form-control" readonly id="txtTaxAmount" />
+        </div>
+    </div>
+
+    <script>
+        var buttons = document.getElementById("bt_calculate");
+        buttons.onclick = function () {
+            var incones = document.getElementById("txtNetIncome").value;
+            console.log(incones);
+            //稅率
+            var rate = function (incones) {
+                if (incones < 540000) return 0.05;
+                if (incones >= 540001 && incones < 1210000) return 0.12;
+                if (incones >= 1210001 && incones < 2420000) return 0.2;
+                if (incones >= 2420001 && incones < 4530000) return 0.3;
+                if (incones >= 4530001 && incones < 10310000) return 0.4;
+                return 0.45;
+            }
+            var inc_rate = rate(incones);
+            document.getElementById("txtTaxRate").value = inc_rate;
+
+            //累進差額
+            var progressive = function (incones) {
+                if (incones < 540000) return 0;
+                if (incones >= 540001 && incones < 1210000) return 37800;
+                if (incones >= 1210001 && incones < 2420000) return 134600;
+                if (incones >= 2420001 && incones < 4530000) return 376600;
+                if (incones >= 4530001 && incones < 10310000) return 829600;
+                return incones*0.45-1345100;
+            }
+            var inc_progressive = progressive(incones);
+            document.getElementById("txtTaxAdjustment").value = inc_progressive;
+
+           //應納稅額
+           document.getElementById("txtTaxAmount").value = incones*inc_rate-inc_progressive;
+
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+
+    <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-9 mt-3">
+                <h3 style="color:#009D99">貸款試算</h3>
+                <HR color="#009D99">
+
+                <!--貸款金額-->
+                <div class="form-group row">
+                    <label for="txtNetIncome" class="col-2 col-form-label text-right">貸款金額</label>
+                    <div class="input-group col-4">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                        </div>
+                        <input type="text" class="form-control" id="txt_Income" />
+                    </div>
+                </div>
+                <!--年利率-->
+                <div class="form-group row">
+                    <label for="txtNetIncome" class="col-2 col-form-label text-right">貸款年利率</label>
+                    <div class="input-group col-4">
+                        <input type="text" class="form-control" id="txt_Rate">
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="basic-addon2">
+                                <i class="fas fa-percent"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!--貸款期間-->
+                <div class="form-group row">
+                    <label for="txtNetIncome" class="col-2 col-form-label text-right">貸款期間</label>
+                    <div class="input-group col-4">
+                        <input type="text" class="form-control" id="txt_Year" />
+                        <div class="input-group-append">
+                            <span class="input-group-text font-weight-bold" id="basic-addon2">年</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-9 text-center mt-3">
+                        <button type="button" name="" id="btn_reset" class="btn btn-success" btn-lg btn-block>重新計算</button>
+                        <button type="button" name="" id="btn_calculate" class="btn btn-info" btn-lg btn-block>開始試算</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col mt-4">
+                        <table class="table table-bordered text-center">
+                            <thead>
+                                <tr style="background-color:#009D99">
+                                    <th scope="col"></th>
+                                    <th scope="col" style="color:white">應付金額/月</th>
+                                    <th scope="col" style="color:white">應付利息/月</th>
+                                    <th scope="col" style="color:white">繳清總金額</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row" style="background-color:#009D99">
+                                        <a style="color:white">結果</a>
+                                    </th>
+                                    <td id="m_money"></td>
+                                    <td id="m_rate"></td>
+                                    <td id="m_totalmoney"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var buttons = document.getElementById("btn_calculate");
+        buttons.onclick = function () {
+            var incones = document.getElementById("txt_Income").value;
+            var rates = document.getElementById("txt_Rate").value;
+            var years = document.getElementById("txt_Year").value;
+
+            var LoanCalculator = function (incones, rates, years) {
+                var _mRate = rates / 12 /100;
+                var _amount = incones;
+                var _mLoan = years * 12;
+                var _aRate = ((Math.pow(1 + _mRate, _mLoan)) * _mRate) / ((Math.pow(1 + _mRate, _mLoan)) - 1);
+
+                this.getMonthlyPayAmount = function () {//每個月付多少錢
+                    return Math.floor(_amount * _aRate);
+                }
+
+                this.getMonthlyPayRateAmount = function () {//每個月付多少利息
+                    return Math.floor(this.getMonthlyPayAmount() - (_amount / _mLoan));
+                }
+
+                this.getTotalFinalPayAmount = function () {//繳清總共付多少
+                    return Math.floor(this.getMonthlyPayAmount() * _mLoan);
+                }
+
+                
+            }
+
+            var func = new LoanCalculator(incones, rates, years);
+           
+            var inc_money =  func.getMonthlyPayAmount();
+            document.getElementById("m_money").innerText = inc_money;
+
+            var inc_rate = func.getMonthlyPayRateAmount();
+            document.getElementById("m_rate").innerText = inc_rate;
+
+            var inc_totalmoney = func.getTotalFinalPayAmount();
+            document.getElementById("m_totalmoney").innerText = inc_totalmoney;
+        }
+
+        var buttons = document.getElementById("btn_reset");
+        buttons.onclick = function () {
+            document.getElementById("txt_Income").value = "";
+            document.getElementById("txt_Rate").value = "";
+            document.getElementById("txt_Year").value = ""; 
+        }
+
+    </script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

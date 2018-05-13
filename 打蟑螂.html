@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <title>whack-a-mole</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url(./images/earth.jpg);
+        }
+
+        #game {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+           
+        }
+
+        #playground {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 1px;
+            height: 1px;
+            margin: auto;
+            /*cursor: url(./images/hit.ani), default;*/
+           /*--cursor: crosshair;*/
+        }
+
+        #playground .mole {
+            width: 120px;
+            height: 120px;
+            line-height: 120px;
+            text-align: center;
+            background-image: url(./images/grass-upper.png);
+            background-repeat: no-repeat;
+            background-size: 120px 60px;
+            background-position: top 0;
+            position: relative;
+        }
+
+        #playground .mole::before {
+            content: "";
+            width: 100px;
+            height: 100px;
+            background-image: url(./images/2.png);
+            background-repeat: no-repeat;
+            background-size: 100px 80px;
+            background-position: top 0;
+            position: absolute;
+            top: 40px;
+            left: 20px;
+            opacity: .5;
+            transition: all 1s;
+        }
+
+        #playground .mole.active::before {
+            width: 100px;
+            height: 100px;
+            background-image: url(./images/1.png);
+            top: 0;
+            opacity: 1;
+            transition: all .3s;
+        }
+
+        #playground .mole.hit::before {
+            width: 100px;
+            height: 100px;
+            background-image: url(./images/3.png);
+            top: 40px;
+            opacity: 1;
+            transition: all .2s;
+           
+        }
+
+        #playground .mole::after {
+            content: "";
+            width: 120px;
+            height: 60px;
+            background-image: url(./images/grass-lower.png);
+            background-repeat: no-repeat;
+            background-size: 120px 60px;
+            background-position: top 0;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        #score {
+            position: fixed;
+            min-width: 250px;
+            right: 0;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.596);
+            padding: 20px;
+        }
+
+        .url {cursor: url(myBall.cur),auto;}
+    </style>
+</head>
+
+<body>
+    <div id="game">
+        <div id="playground">
+            cursor:url(myBall.cur),auto;
+        </div>
+        <div id="score">
+            <h2 style="color:saddlebrown">打蟑螂</h2>
+            <h3>
+                <span style="color:midnightblue">目前分數</span>
+
+                <span id="current-score" class="scores">0</span>
+                <span style="color:midnightblue">分</span>
+            </h3>
+            <h3>
+                <span style="color:midnightblue">級數</span>
+                <span id="current-level" class="scores">1</span>
+            </h3>
+            <h3>
+                <span style="color:midnightblue">生命</span>
+            </h3>
+            <div class="progress">
+                <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                    100
+                </div>
+            </div>
+            <hr>
+            <p>
+                <select id="series" class="form-control">
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                </select>
+            </p>
+            <p>
+                <button id="start" class="btn btn-success">開始</button>
+                <button id="stop" class="btn btn-danger">停止</button>
+            </p>
+        </div>
+        <div id="control">
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        $(function () {
+            var score = 0,
+                life = 100,
+                timer = null,
+                levelProfiles = [{
+                        level: 1,
+                        score: 0,
+                        moles: 1,
+                        interval: 1500
+                    },
+                    {
+                        level: 2,
+                        score: 100,
+                        moles: 2,
+                        interval: 1500
+                    },
+                    {
+                        level: 3,
+                        score: 200,
+                        moles: 3,
+                        interval: 1250
+                    },
+                    {
+                        level: 4,
+                        score: 300,
+                        moles: 4,
+                        interval: 1000
+                    },
+                    {
+                        level: 5,
+                        score: 500,
+                        moles: 5,
+                        interval: 1000
+                    },
+                    {
+                        level: 6,
+                        score: 1000,
+                        moles: 6,
+                        interval: 750
+                    },
+                ];
+
+            var $playground = $("#playground");
+
+            $playground.on("click", ".mole", function () {
+                var $this = $(this); // this == div.mole
+
+                if ($this.is(".active")) {
+                    score += 10; //累加分數
+                    updateScore();
+
+                    $this
+                        .removeClass("active")
+                        .addClass("hit");
+                }
+            });
+
+            $("#series").change(function () {
+                var $this = $(this);
+                createPlayground($this.val());
+            });
+
+            $("#start").click(function () {
+                startGame();
+            });
+
+            $("#stop").click(function () {
+                stopGame();
+            });
+
+
+
+            function createPlayground(edge) {
+                $playground.empty();
+
+                var $table = $("<table></table>"),
+                    counter = 0;
+
+                for (var i = 0; i < edge; i++) {
+                    var $tr = $("<tr></<tr>");
+                    for (var j = 0; j < edge; j++) {
+                        var $td = $("<td></<td>")
+                            .appendTo($tr);
+
+                        var $div = $("<div></div>")
+                            .addClass("mole")
+                            .appendTo($td);
+                    }
+                    $tr.appendTo($table);
+                }
+                $table
+                    .appendTo($playground)
+                    .css({
+                        marginTop: -1 * ($table.outerHeight() / 2),
+                        marginLeft: -1 * ($table.outerWidth() / 2)
+                    });
+            }
+
+            function startGame() {
+                score = 0;
+                life = 100;
+                updateLife();
+                nextMole();
+            }
+
+            function stopGame() {
+                clearTimeout(timer);
+                $(".mole.active").removeClass("active")
+                $(".mole.hit").removeClass("hit")
+            }
+
+            function getLevelProfile() {
+                var levelProfile = levelProfiles[0];
+
+                for (var i = 0; i < levelProfiles.length; i++) {
+                    if (score >= levelProfiles[i].score) {
+                        levelProfile = levelProfiles[i];
+                    } else {
+                        break;
+                    }
+                }
+                return levelProfile;
+            }
+
+            function updateScore() {
+                $("#current-score").text(score);
+            }
+
+            function updateLife() {
+                $("#progress")
+                    .attr("aria-valuenow", life)
+                    .css("width", life + "%")
+                    .text(life);
+            }
+
+            function nextMole() {
+                var $moles = $playground.find(".mole"),
+                    levelProfile = getLevelProfile();
+
+                var active = $moles.filter(".active").length;
+                var hit = $moles.filter(".hit").length;
+                life -= Math.max(0, active - hit);
+                updateLife();
+
+                if (life <= 0) {
+                    stopGame();
+                    alert("GAME OVER!");
+                    return;
+                }
+
+                $moles.removeClass("active").removeClass("hit");
+
+                $("#current-level").text(levelProfile.level);
+
+                for (var i = 0; i < levelProfile.moles; i++) {
+                    var next = Math.floor(Math.random() * $moles.length);
+                    $moles.eq(next).addClass("active");
+                }
+
+                timer = setTimeout(nextMole, levelProfile.interval);
+            }
+
+            createPlayground(3);
+        });
+    </script>
+</body>
+
+</html>
