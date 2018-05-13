@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000 url(./images/1.jpg) center center fixed no-repeat;
+            -moz-background-size: cover;
+            background-size: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row text-center">
+            <h3 style="color:white">『生命靈數』請輸入西元年/月/日</h3>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-12">
+                <h5 style="color:white">西元年</h5>
+                <input id="birthYear" type="text" class="form-control" />&nbsp;
+                <h5 style="color:white">月</h5>
+                <input id="birthMonth" type="text" class="form-control" /> &nbsp;
+                <h5 style="color:white">日</h5>
+                <input id="birthDay" type="text" class="form-control" />&nbsp;
+                <button id="cmdCalculate" type="button" class="btn btn-danger">計算</button>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <h3 style="color:white">星座：</h3>&nbsp;
+            <h3 style="color:white">
+                <label id="constellation" type="text" style="width:300px; " class="text-center" />
+            </h3>
+        </div>
+        <div class="row mt-4">
+            <h3 style="color:white">生命靈數：</h3>&nbsp;
+            <h3 style="color:white">
+                <label id="lifetext" type="text" style="width:1000px; " class="text-center" />
+            </h3>
+        </div>
+    </div>
+
+
+    <!--jquery.min.js要放在最上方-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--引用UI JS-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="./js/LifeSpirit.js"></script>
+    <script>
+        $(function () {
+            $("#cmdCalculate").click(function () {
+                console.log($("#birthYear").val());
+                var tmp = new NumerologyCalculator($("#birthYear").val(), $("#birthMonth").val(), $(
+                    "#birthDay").val()); //instence
+                console.log(tmp.getLifeNumerlogy());
+                var a = tmp.getAstrologyConstellationName(); // 取得星座名稱
+                // console.log(tmp.getLifeNumerologyInternal()); //取得生命靈數
+                // console.log(a);
+                $.ajax({
+                    url: "https://gist.githubusercontent.com/regionbbs/a4633c99d4f3d73c41538134b0b62162/raw/9b81dd8ae2bbe0b088d54c2118e5eb2d1021313f/" +
+                        a + ".json",
+                    type: "GET"
+                }).done(function (data) {
+                    var o = JSON.parse(data);
+                    $("#constellation").text(o.name);
+                    $("#lifetext").text(o.lookup[tmp.getLifeNumerlogy() - 1])
+                })
+            });
+        });
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "module": "system",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "outFile":"./js/LifeSpirit.js"
+    },
+    "files": [
+       "LifeSpirit.ts"
+    ]
+}
