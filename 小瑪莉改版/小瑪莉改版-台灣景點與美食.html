@@ -2,7 +2,9 @@
 <html lang="en">
 
 <head>
-    <title>Title</title>
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Font_K.svg/2000px-Font_K.svg.png" type="image/ico"
+    />
+    <title>KELLY▶小瑪莉改版</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -101,8 +103,8 @@
                 <img id="img_31" width="90px" height="90px" src="./images/twfood-31.JPG">
             </div>
             <div class="col-10">
-                        <h2 class="text-center" style="color:mediumturquoise">I Love Taiwan</h2>
-                </div>
+                <h2 class="text-center" style="color:mediumturquoise">I Love Taiwan</h2>
+            </div>
             <div class="col-1">
                 <img id="img_14" width="90px" height="90px" src="./images/twfood-14.JPG">
             </div>
@@ -190,7 +192,7 @@
                     break;
                 }
 
-                blocks.push(block);//加入blocks[]陣列
+                blocks.push(block); //加入blocks[]陣列
             }
 
 
@@ -215,16 +217,15 @@
                 setTimeout(run, 20);
             }
             if (step == 1) {
-                var imgCreate = document.createElement("img");//create a img tag
-                imgCreate.src = blocks[brick + 1].src;//find src then give newimage
+                var imgCreate = document.createElement("img"); //create a img tag
+                imgCreate.src = blocks[brick + 1].src; //find src then give newimage
                 imgCreate.width = 120;
                 imgCreate.height = 120;
-                var center = document.getElementById("center");//find id = center
-                center.appendChild(imgCreate);//appendchild-> father>child
+                var center = document.getElementById("center"); //find id = center
+                center.appendChild(imgCreate); //appendchild-> father>child
             }
         }
         init();
-
     </script>
 
 </body>

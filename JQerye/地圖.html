@@ -1,7 +1,9 @@
 <html>
 
 <head>
-    <title>JQ_地圖</title>
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Font_K.svg/2000px-Font_K.svg.png" type="image/ico"
+    />
+    <title>KELLY▶JQ_地圖</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -66,13 +68,13 @@
                         );
 
                         var marker = new google.maps.Marker({
-                            position:{
-                                lat:data.results[0].geometry.location.lat,
-                                lng:data.results[0].geometry.location.lng
+                            position: {
+                                lat: data.results[0].geometry.location.lat,
+                                lng: data.results[0].geometry.location.lng
                             },
-                            map:map,
+                            map: map,
                             icon: "https://png.icons8.com/metro/15/3A0088/thumbs-up.png",
-                            title:name
+                            title: name
                         })
                     });
                 }
