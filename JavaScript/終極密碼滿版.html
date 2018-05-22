@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+
+    <style>
+        body,
+        button {
+            font-family: '微軟正黑體';
+            color: white;
+            background-color: black;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="contain">
+        <div class="row">
+            <div class="col">
+                <h1 class="text-center display-3">
+                    <strong>終極密碼</strong>
+                </h1>
+            </div>
+        </div>
+        <!-- 0~100 -->
+        <div class="row">
+            <div class="col">
+                <h2 class="text-right display-1">
+                    <strong> </strong>
+                </h2>
+            </div>
+            <div class="col">
+                <h2 id="range" class="text-center display-1">
+                    0~100
+                </h2>
+            </div>
+            <div class="col">
+                <h2 class="text-left display-1" id="big">
+                    <strong id="big"></strong>
+                </h2>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-4 display-3">　</div>
+                <div id="output" class="col-4 mb-3 display-4 text-center"></div>
+                <div class="col-4 display-3">　</div>
+            </div>
+            <div class="row">
+                <!-- line1 -->
+                <div class="col-4">
+                    <button type="button" class="btn border-light btn-block" style="background-color:black">
+                        <h1>1</h1>
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn border-light btn-block" style="background-color:black">
+                        <h1>2</h1>
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn border-light btn-block" style="background-color:black">
+                        <h1>3</h1>
+                    </button>
+                </div>
+            </div>
+            <!-- line2 -->
+            <div class="row mt-2">
+
+                <div class="col-4">
+                    <button type="button" class="btn border-light  btn-block" style="background-color:black">
+                        <h1>4</h1>
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn border-light  btn-block" style="background-color:black">
+                        <h1>5</h1>
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn border-light  btn-block" style="background-color:black">
+                        <h1>6</h1>
+                    </button>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <!-- line3 -->
+                <div class="col-4">
+                    <button type="button" class="btn border-light  btn-block" style="background-color:black">
+                        <h1>7</h1>
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn border-light  btn-block" style="background-color:black">
+                        <h1>8</h1>
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn border-light  btn-block" style="background-color:black">
+                        <h1>9</h1>
+                    </button>
+                </div>
+            </div>
+            <!-- line4 -->
+            <div class="row mt-2">
+                <div class="col-4">
+                    <button id="delete" type="button" class="btn border-danger  btn-block" style="background-color:black">
+                        <h1>X</h1>
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn border-light  btn-block" style="background-color:black">
+                        <h1>0</h1>
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button id="go" type="button" class="btn border-primary  btn-block" style="background-color:black">
+                        <h1>Enter</h1>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var rnd = Math.random() * 100;
+        var correct = false;
+        var ans = Math.floor(rnd);
+        var sm = 0,
+            big = 100;
+
+        var output = document.getElementById("output");
+
+        var buttons = document.getElementsByTagName("h1");
+        for (var i = 0; i < 12; i++) {
+            var button = buttons[i];
+            button.onclick = function () {
+                console.log(button);
+                var output = document.getElementById("output");
+                var btn = event.srcElement;
+                if (output.innerText.length < 2) {
+                    output.innerText += btn.innerText;
+                }
+            };
+        }
+
+        var range = document.getElementById("range");
+        // go
+        document.getElementById("go").onclick = function () {
+            console.log(ans);
+
+            if (output.innerText == ans) {
+                alert("過關");
+            }
+            if (output.innerText > ans) {
+                if (output.innerText < big)
+                    big = output.innerText;
+            } else if (output.innerText < ans) {
+                if (output.innerText > sm)
+                    sm = output.innerText;
+            }
+            range.innerText = sm + "~" + big;
+            output.innerText = "";
+        }
+
+        //delete
+        document.getElementById("delete").onclick = function () {
+            output.textContent = "";
+        }
+    </script>
+</body>
+
+</html>
